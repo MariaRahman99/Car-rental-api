@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('car_reservations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('car_id')->constrained('cars')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->date('reservation_date');
+            $table->enum('status', ['Pending', 'Confirmed', 'Cancelled'])->default('Pending');
             $table->timestamps();
         });
     }

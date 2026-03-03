@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Insurance extends Model
 {
-    //
+    public function cars()
+    {
+        return $this->hasMany(Car::class);
+    }
 }
