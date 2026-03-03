@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
             $table->enum('position', ['Manager', 'Receptionist', 'Mechanic', 'Admin'])->default('Receptionist');
