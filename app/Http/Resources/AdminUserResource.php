@@ -17,7 +17,7 @@ class AdminUserResource extends JsonResource
         $employee = $this->employee;
 
         return [
-            'id'           => $employee?->id,
+            'id'           => $this->id,
             'first_name'   => $employee?->first_name,
             'last_name'    => $employee?->last_name,
             'email'        => $employee?->email ?? $this->email,

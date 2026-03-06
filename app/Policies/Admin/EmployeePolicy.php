@@ -19,4 +19,8 @@ class EmployeePolicy
     {
         return $user->role === 'admin';
     }
+    public function view(User $user, User $employee)
+    {
+        return $user->role === 'admin' || $user->id === $employee->id;
+    }
 }

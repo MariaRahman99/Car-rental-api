@@ -79,4 +79,18 @@ class EmployeeController extends Controller
             );
         }
     }
+    public function show($id)
+    {
+        $user = User::with('employee')->find($id); 
+
+        if (!$user) {
+            return $this->error('User not found', 404);
+        }
+
+        $this->authorize('view', $user); 
+        return $this->success(
+            'User retrieved successfully',
+            new AdminUserResource($user)
+        );
+    }
 }
