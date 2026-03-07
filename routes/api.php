@@ -23,3 +23,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 
+use App\Http\Controllers\Api\CarController;
+use App\Http\Controllers\CarController as ControllersCarController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/cars', [\App\Http\Controllers\CarController::class, 'store']);
+    // Route::put('/cars/{car}', [CarController::class, 'update']);
+    // Route::delete('/cars/{car}', [CarController::class, 'destroy']);
+
+    Route::get('/cars', [\App\Http\Controllers\CarController::class, 'index']);
+    Route::get('/cars/{car}', [\App\Http\Controllers\CarController::class, 'show']);
+});
