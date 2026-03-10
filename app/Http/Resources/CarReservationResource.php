@@ -17,14 +17,19 @@ class CarReservationResource extends JsonResource
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+
             'car' => new CarResource($this->whenLoaded('car')),
-            'customer' => [
-                'id' => $this->customer?->id,
-                'first_name' => $this->customer?->first_name,
-                'last_name' => $this->customer?->last_name,
-                'email' => $this->customer?->email,
-                'phone_number' => $this->customer?->phone_number,
-            ],
+
+            'customer' => $this->whenLoaded('customer', function () {
+                return [
+                    'id' => $this->customer->id,
+                    'first_name' => $this->customer->first_name,
+                    'last_name' => $this->customer->last_name,
+                    'email' => $this->customer->email,
+                    'phone_number' => $this->customer->phone_number,
+                    'role' => $this->customer->role,
+                ];
+            }),
         ];
     }
 }

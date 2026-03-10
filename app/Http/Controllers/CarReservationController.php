@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Car;
-use App\Models\CarReservation;
 use App\Http\Requests\CarReservationRequest;
 use App\Http\Resources\CarReservationResource;
+use App\Models\Car;
+use App\Models\CarReservation;
 use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 
 class CarReservationController extends Controller
 {
@@ -48,7 +49,10 @@ class CarReservationController extends Controller
             return $this->error('This car is not available for reservation', 422);
         }
 
-        $reservation = CarReservation::create($request->validated());
+        $reservation = CarReservation::create([
+            ...$request->reservationData(),
+            'customer_id' => auth()->id(),
+        ]);
 
         $reservation->load(['car.category', 'car.branch', 'customer']);
 
@@ -73,7 +77,15 @@ class CarReservationController extends Controller
             return $this->error('Car not found', 404);
         }
 
-        $reservation->update($request->validated());
+        if ($car->status !== 'Available' && $reservation->car_id != $car->id) {
+            return $this->error('This car is not available for reservation', 422);
+        }
+
+        $reservation->update([
+            ...$request->reservationData(),
+            'customer_id' => $reservation->customer_id,
+        ]);
+
         $reservation->load(['car.category', 'car.branch', 'customer']);
 
         return $this->success(
@@ -93,5 +105,17 @@ class CarReservationController extends Controller
         $reservation->delete();
 
         return $this->success(null, 'Reservation deleted successfully');
+    }
+
+    public function myReservations(Request $request)
+    {
+        $reservations = CarReservation::with(['car.category', 'car.branch', 'customer'])
+            ->where('customer_id', auth()->id())
+            ->get();
+
+        return $this->success(
+            CarReservationResource::collection($reservations),
+            'Your reservations retrieved successfully'
+        );
     }
 }
