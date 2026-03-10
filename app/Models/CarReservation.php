@@ -10,7 +10,7 @@ class CarReservation extends Model
         'car_id',
         'customer_id',
         'reservation_date',
-        'status'
+        'status',
     ];
 
     public function car()
@@ -20,6 +20,6 @@ class CarReservation extends Model
 
     public function customer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'customer_id');
     }
 }
