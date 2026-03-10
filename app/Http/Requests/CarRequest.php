@@ -39,7 +39,6 @@ class CarRequest extends FormRequest
             'mileage' => 'required|integer|min:0',
             'status' => 'required|in:Available,Rented,Maintenance,Reserved',
             'rental_rate' => 'required|numeric|min:0',
-            'insurance_id' => 'nullable|exists:insurances,id',
 
             'category.name' => 'required|string|max:255',
             'category.description' => 'nullable|string',
@@ -48,12 +47,14 @@ class CarRequest extends FormRequest
             'branch.address' => 'required|string|max:500',
             'branch.phone_number' => 'required|string|max:20',
             'branch.manager_id' => 'nullable|exists:employees,id',
+
+            'insurance.company_name' => 'required|string|max:255',
         ];
     }
 
     public function carData(): array
     {
-        return $this->safe()->except(['category', 'branch']);
+        return $this->safe()->except(['category', 'branch', 'insurance']);
     }
 
     public function categoryData(): array
@@ -64,6 +65,11 @@ class CarRequest extends FormRequest
     public function branchData(): array
     {
         return $this->validated()['branch'] ?? [];
+    }
+
+    public function insuranceData(): array
+    {
+        return $this->validated()['insurance'] ?? [];
     }
 
     public function messages(): array
@@ -99,6 +105,8 @@ class CarRequest extends FormRequest
             'branch.address.required' => 'Branch address is required.',
             'branch.phone_number.required' => 'Branch phone number is required.',
             'branch.manager_id.exists' => 'Selected branch manager does not exist.',
+
+            'insurance.company_name.required' => 'Insurance company name is required.',
         ];
     }
 }

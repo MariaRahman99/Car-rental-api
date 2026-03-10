@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\Branch;
+use App\Models\Insurance;
 use App\Models\VehicleCategory;
 use App\Http\Requests\CarRequest;
 use App\Http\Resources\CarResource;
@@ -16,7 +17,7 @@ class CarController extends Controller
 
     public function index()
     {
-        $cars = Car::with(['category', 'branch'])->get();
+        $cars = Car::with(['category', 'branch', 'insurance'])->get();
 
         return $this->success(
             CarResource::collection($cars),
@@ -26,7 +27,7 @@ class CarController extends Controller
 
     public function show($id)
     {
-        $car = Car::with(['category', 'branch'])->find($id);
+        $car = Car::with(['category', 'branch', 'insurance'])->find($id);
 
         if (!$car) {
             return $this->error('Car not found', 404);
@@ -49,13 +50,16 @@ class CarController extends Controller
 
             $branch = Branch::create($request->branchData());
 
+            $insurance = Insurance::create($request->insuranceData());
+
             $car = Car::create([
                 ...$request->carData(),
                 'category_id' => $category->id,
                 'branch_id' => $branch->id,
+                'insurance_id' => $insurance->id,
             ]);
 
-            $car->load(['category', 'branch']);
+            $car->load(['category', 'branch', 'insurance']);
 
             return $this->success(
                 new CarResource($car),
@@ -67,7 +71,7 @@ class CarController extends Controller
 
     public function update(CarRequest $request, $id)
     {
-        $car = Car::with(['category', 'branch'])->find($id);
+        $car = Car::with(['category', 'branch', 'insurance'])->find($id);
 
         if (!$car) {
             return $this->error('Car not found', 404);
@@ -92,7 +96,14 @@ class CarController extends Controller
                 $car->update(['branch_id' => $branch->id]);
             }
 
-            $car->load(['category', 'branch']);
+            if ($car->insurance) {
+                $car->insurance->update($request->insuranceData());
+            } else {
+                $insurance = Insurance::create($request->insuranceData());
+                $car->update(['insurance_id' => $insurance->id]);
+            }
+
+            $car->load(['category', 'branch', 'insurance']);
 
             return $this->success(
                 new CarResource($car),
