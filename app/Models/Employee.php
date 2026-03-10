@@ -16,8 +16,14 @@ class Employee extends Model
         'position',
         'branch_id',
         'hire_date',
-        'salary'
+        'salary',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);
@@ -31,10 +37,5 @@ class Employee extends Model
     public function rentals()
     {
         return $this->hasMany(Rental::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 }
