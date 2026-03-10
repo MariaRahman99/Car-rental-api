@@ -7,13 +7,24 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CarReservationResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'car_id' => $this->car_id,
+            'customer_id' => $this->customer_id,
+            'reservation_date' => $this->reservation_date,
+            'status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'car' => new CarResource($this->whenLoaded('car')),
+            'customer' => [
+                'id' => $this->customer?->id,
+                'first_name' => $this->customer?->first_name,
+                'last_name' => $this->customer?->last_name,
+                'email' => $this->customer?->email,
+                'phone_number' => $this->customer?->phone_number,
+            ],
+        ];
     }
 }
