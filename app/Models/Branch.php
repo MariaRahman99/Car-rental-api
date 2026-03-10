@@ -10,8 +10,9 @@ class Branch extends Model
         'name',
         'address',
         'phone_number',
-        'manager_id'
+        'manager_id',
     ];
+
     public function employees()
     {
         return $this->hasMany(Employee::class);
