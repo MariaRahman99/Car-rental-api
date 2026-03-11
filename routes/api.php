@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CarReservationController;
+use App\Http\Controllers\MaintenanceController;
+
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
@@ -48,3 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/reservations/{id}', [CarReservationController::class, 'update']);
     Route::delete('/reservations/{id}', [CarReservationController::class, 'destroy']);
 });
+
+
+Route::get('cars/{car}/maintenances', [MaintenanceController::class, 'index']);
+Route::post('cars/{car}/maintenances', [MaintenanceController::class, 'store']);
+
+Route::get('maintenances/{id}', [MaintenanceController::class, 'show']);
+Route::put('maintenances/{id}', [MaintenanceController::class, 'update']);
+Route::delete('maintenances/{id}', [MaintenanceController::class, 'destroy']);
