@@ -15,7 +15,7 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'payment_date' => 'datetime',
+        'payment_date' => 'date',
     ];
 
     public function rental()

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CarReservationController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\Payment\PaymentController;
 
 
 Route::post('/register', [RegisterController::class, 'register']);
@@ -58,3 +59,7 @@ Route::post('cars/{car}/maintenances', [MaintenanceController::class, 'store']);
 Route::get('maintenances/{id}', [MaintenanceController::class, 'show']);
 Route::put('maintenances/{id}', [MaintenanceController::class, 'update']);
 Route::delete('maintenances/{id}', [MaintenanceController::class, 'destroy']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/payments', [PaymentController::class, 'store']);
+});
