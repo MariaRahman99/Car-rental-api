@@ -9,7 +9,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CarReservationController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\Payment\PaymentController;
-
+use App\Http\Controllers\DiscountController;
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
@@ -62,4 +62,10 @@ Route::delete('maintenances/{id}', [MaintenanceController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payments', [PaymentController::class, 'store']);
+});
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::post('/discounts', [DiscountController::class, 'store']);
+    Route::put('/discounts/{id}', [DiscountController::class, 'update']);
+    Route::delete('/discounts/{id}', [DiscountController::class, 'destroy']);
 });
