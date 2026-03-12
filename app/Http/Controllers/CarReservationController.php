@@ -13,9 +13,15 @@ class CarReservationController extends Controller
 {
     use ApiResponse;
 
-    public function index()
+    public function index(Request $request)
     {
-        $reservations = CarReservation::with(['car.category', 'car.branch', 'customer', 'payments'])->get();
+        $query = CarReservation::with(['car.category', 'car.branch', 'customer', 'payments']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $reservations = $query->latest()->get();
 
         return $this->success(
             CarReservationResource::collection($reservations),
@@ -47,6 +53,22 @@ class CarReservationController extends Controller
 
         if ($car->status !== 'Available') {
             return $this->error('This car is not available for reservation', 422);
+        }
+
+        $existingReservation = CarReservation::where('car_id', $request->car_id)
+            ->whereIn('status', ['Pending', 'Approved'])
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('rental_start_date', [$request->rental_start_date, $request->rental_end_date])
+                    ->orWhereBetween('rental_end_date', [$request->rental_start_date, $request->rental_end_date])
+                    ->orWhere(function ($q) use ($request) {
+                        $q->where('rental_start_date', '<=', $request->rental_start_date)
+                            ->where('rental_end_date', '>=', $request->rental_end_date);
+                    });
+            })
+            ->exists();
+
+        if ($existingReservation) {
+            return $this->error('This car is already reserved for the selected dates', 422);
         }
 
         $reservation = CarReservation::create([
@@ -87,6 +109,15 @@ class CarReservationController extends Controller
 
         if ($car->status !== 'Available' && $reservation->car_id != $car->id) {
             return $this->error('This car is not available for reservation', 422);
+        }
+
+        $existingReservation = CarReservation::where('car_id', $request->car_id)
+            ->whereIn('status', ['Pending', 'Approved'])
+            ->where('id', '!=', $reservation->id)
+            ->exists();
+
+        if ($existingReservation) {
+            return $this->error('This car is already reserved', 422);
         }
 
         $reservation->update([

@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'manager'])->group(function () {
+    Route::get('/reservations', [CarReservationController::class, 'index']);
     Route::post('/reservations/{id}/approve', [ReservationApprovalController::class, 'approve']);
     Route::post('/reservations/{id}/decline', [ReservationApprovalController::class, 'decline']);
 });
