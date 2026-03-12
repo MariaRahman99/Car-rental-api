@@ -21,10 +21,6 @@ class PaymentRequest extends FormRequest
                 'required',
                 Rule::in(['Cash', 'Credit Card', 'Debit Card', 'Online'])
             ],
-            'rental_start' => ['required', 'date', 'after_or_equal:today'],
-            'rental_end' => ['required', 'date', 'after:rental_start'],
-            'insurance_option' => ['nullable', 'boolean'],
-            'fuel_level_start' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ];
     }
 
@@ -38,9 +34,6 @@ class PaymentRequest extends FormRequest
             'amount.min' => 'Amount must be greater than 0.',
             'payment_method.required' => 'Payment method is required.',
             'payment_method.in' => 'Payment method must be one of: Cash, Credit Card, Debit Card, Online.',
-            'rental_start.required' => 'Rental start date is required.',
-            'rental_end.required' => 'Rental end date is required.',
-            'rental_end.after' => 'Rental end must be after rental start.',
         ];
     }
 }

@@ -15,7 +15,7 @@ class CarReservationController extends Controller
 
     public function index()
     {
-        $reservations = CarReservation::with(['car.category', 'car.branch', 'customer'])->get();
+        $reservations = CarReservation::with(['car.category', 'car.branch', 'customer', 'payments'])->get();
 
         return $this->success(
             CarReservationResource::collection($reservations),
@@ -25,7 +25,7 @@ class CarReservationController extends Controller
 
     public function show($id)
     {
-        $reservation = CarReservation::with(['car.category', 'car.branch', 'customer'])->find($id);
+        $reservation = CarReservation::with(['car.category', 'car.branch', 'customer', 'payments'])->find($id);
 
         if (!$reservation) {
             return $this->error('Reservation not found', 404);
@@ -54,7 +54,7 @@ class CarReservationController extends Controller
             'customer_id' => auth()->id(),
         ]);
 
-        $reservation->load(['car.category', 'car.branch', 'customer']);
+        $reservation->load(['car.category', 'car.branch', 'customer', 'payments']);
 
         return $this->success(
             new CarReservationResource($reservation),
@@ -71,6 +71,14 @@ class CarReservationController extends Controller
             return $this->error('Reservation not found', 404);
         }
 
+        if ($reservation->customer_id !== auth()->id()) {
+            return $this->error('Unauthorized', 403);
+        }
+
+        if ($reservation->status !== 'Pending') {
+            return $this->error('Only pending reservations can be updated', 422);
+        }
+
         $car = Car::find($request->car_id);
 
         if (!$car) {
@@ -84,9 +92,10 @@ class CarReservationController extends Controller
         $reservation->update([
             ...$request->reservationData(),
             'customer_id' => $reservation->customer_id,
+            'is_paid' => $reservation->is_paid,
         ]);
 
-        $reservation->load(['car.category', 'car.branch', 'customer']);
+        $reservation->load(['car.category', 'car.branch', 'customer', 'payments']);
 
         return $this->success(
             new CarReservationResource($reservation),
@@ -102,6 +111,14 @@ class CarReservationController extends Controller
             return $this->error('Reservation not found', 404);
         }
 
+        if ($reservation->customer_id !== auth()->id()) {
+            return $this->error('Unauthorized', 403);
+        }
+
+        if ($reservation->status !== 'Pending') {
+            return $this->error('Only pending reservations can be deleted', 422);
+        }
+
         $reservation->delete();
 
         return $this->success(null, 'Reservation deleted successfully');
@@ -109,7 +126,7 @@ class CarReservationController extends Controller
 
     public function myReservations(Request $request)
     {
-        $reservations = CarReservation::with(['car.category', 'car.branch', 'customer'])
+        $reservations = CarReservation::with(['car.category', 'car.branch', 'customer', 'payments'])
             ->where('customer_id', auth()->id())
             ->get();
 

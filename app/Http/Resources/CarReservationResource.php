@@ -14,7 +14,11 @@ class CarReservationResource extends JsonResource
             'car_id' => $this->car_id,
             'customer_id' => $this->customer_id,
             'reservation_date' => $this->reservation_date,
+            'rental_start_date' => $this->rental_start_date,
+            'rental_end_date' => $this->rental_end_date,
+            'insurance_option' => $this->insurance_option,
             'status' => $this->status,
+            'is_paid' => $this->is_paid,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
@@ -30,6 +34,8 @@ class CarReservationResource extends JsonResource
                     'role' => $this->customer->role,
                 ];
             }),
+
+            'payments' => PaymentResource::collection($this->whenLoaded('payments')),
         ];
     }
 }

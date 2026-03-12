@@ -7,9 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class RentalResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array<string, mixed>.
-     */
     public function toArray(Request $request): array
     {
         return [

@@ -7,13 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PaymentResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array<string, mixed>.
-     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
+            'reservation_id' => $this->reservation_id,
             'rental_id' => $this->rental_id,
             'payment_date' => $this->payment_date,
             'amount' => $this->amount,
