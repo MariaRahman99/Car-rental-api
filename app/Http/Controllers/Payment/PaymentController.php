@@ -51,7 +51,7 @@ class PaymentController extends Controller
             $rental = Rental::create([
                 'customer_id' => auth()->id(),
                 'car_id' => $car->id,
-                'employee_id' => null,
+                'employee_id' => 1,
                 'discount_id' => null,
                 'rental_start_date' => $request->rental_start,
                 'rental_end_date' => $request->rental_end,
