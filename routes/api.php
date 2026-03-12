@@ -21,7 +21,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/users', [EmployeeController::class, 'index']);
-        Route::post('/admin/employees', [EmployeeController::class, 'store'])
+        Route::post('/admin/register', [EmployeeController::class, 'store'])
             ->middleware('can:create,App\Models\Employee');
         Route::get('admin/users/{id}', [EmployeeController::class, 'show']);    
     });
