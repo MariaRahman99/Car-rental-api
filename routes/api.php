@@ -17,14 +17,15 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
     Route::get('/admin/users', [EmployeeController::class, 'index']);
     Route::post('/admin/register', [EmployeeController::class, 'store'])
         ->middleware('can:create,App\Models\Employee');
     Route::get('/admin/users/{id}', [EmployeeController::class, 'show']);
+    Route::put('/admin/users/{id}', [EmployeeController::class, 'update']);
+    Route::delete('/admin/users/{id}', [EmployeeController::class, 'destroy']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {
