@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ReservationApprovalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CarReservationController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\Payment\PaymentController;
@@ -66,4 +67,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('maintenances/{id}', [MaintenanceController::class, 'show']);
     Route::put('maintenances/{id}', [MaintenanceController::class, 'update']);
     Route::delete('maintenances/{id}', [MaintenanceController::class, 'destroy']);
+});
+Route::middleware(['auth:sanctum', 'manager'])->group(function () {
+    Route::get('/branches', [BranchController::class, 'index']);
+    Route::post('/branches', [BranchController::class, 'store']);
+    Route::get('/branches/{id}', [BranchController::class, 'show']);
+    Route::put('/branches/{id}', [BranchController::class, 'update']);
+    Route::delete('/branches/{id}', [BranchController::class, 'destroy']);
 });
