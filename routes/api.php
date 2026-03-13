@@ -69,9 +69,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('maintenances/{id}', [MaintenanceController::class, 'destroy']);
 });
 Route::middleware(['auth:sanctum', 'manager'])->group(function () {
-    Route::get('/branches', [BranchController::class, 'index']);
-    Route::post('/branches', [BranchController::class, 'store']);
-    Route::get('/branches/{id}', [BranchController::class, 'show']);
-    Route::put('/branches/{id}', [BranchController::class, 'update']);
-    Route::delete('/branches/{id}', [BranchController::class, 'destroy']);
+    Route::get('/admin/branches', [BranchController::class, 'index']);
+    Route::post('/admin/branches', [BranchController::class, 'store']);
+    Route::get('/admin/branches/{id}', [BranchController::class, 'show']);
+    Route::put('/admin/branches/{id}', [BranchController::class, 'update']);
+    Route::delete('/admin/branches/{id}', [BranchController::class, 'destroy']);
 });

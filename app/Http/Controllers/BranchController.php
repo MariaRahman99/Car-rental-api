@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBranchRequest;
+use App\Http\Requests\UpdateBranchRequest;
 use App\Http\Resources\BranchResource;
 use App\Models\Branch;
 use Illuminate\Http\Request;
@@ -14,16 +16,9 @@ class BranchController extends Controller
         return BranchResource::collection($branches);
     }
 
-    public function store(Request $request)
+    public function store(StoreBranchRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'manager_id' => 'nullable|exists:employees,id',
-        ]);
-
-        $branch = Branch::create($validated);
+        $branch = Branch::create($request->validated());
 
         return new BranchResource($branch);
     }
@@ -34,18 +29,9 @@ class BranchController extends Controller
         return new BranchResource($branch);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateBranchRequest $request, Branch $branch)
     {
-        $branch = Branch::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'address' => 'sometimes|required|string|max:255',
-            'phone_number' => 'sometimes|required|string|max:20',
-            'manager_id' => 'nullable|exists:employees,id',
-        ]);
-
-        $branch->update($validated);
+        $branch->update($request->validated());
 
         return new BranchResource($branch);
     }
